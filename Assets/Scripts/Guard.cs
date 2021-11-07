@@ -16,26 +16,33 @@ public class Guard : MonoBehaviour
         Vector3[] waypoints = new Vector3[pathHolder.childCount];
         for (int i = 0; i < waypoints.Length; i++) {
             waypoints[i] = pathHolder.GetChild(i).position;
+            waypoints[i] = new Vector3(waypoints[i].x, transform.position.y, waypoints[i].z);
         }
 
         /* Start the guarding */
-        StartCoroutine(WalkGuardPath(waypoints, waitTime));
+        StartCoroutine(FollowPath(waypoints));
     }
 
     /* CoRoutine to let the guard walk along the waypoint path, stopping at each for a given amount of time */
-    IEnumerator WalkGuardPath(Vector3[] waypoints, float waitAtEachPointTime) {
+    IEnumerator FollowPath(Vector3[] waypoints) {
+        transform.position = waypoints[0];
+
+        int targetWaypointIndex = 1;
+        Vector3 targetWayPoint = waypoints[targetWaypointIndex];
+
         /* The guard never gets a break, ever, we're not running a charity here. */
         while (true) {
-            /* For each waypoint of the Guard's */
-            foreach (Vector3 waypoint in waypoints) {
-                /* walk to it */
-                while (transform.position != waypoint) {
-                    transform.position = Vector3.MoveTowards(transform.position, waypoint, speed * Time.deltaTime);
-                    yield return null;
-                }
-                /* Destination reached, pause and look around a bit */
-                yield return new WaitForSeconds(waitAtEachPointTime);
+            /* walk to it */
+            transform.position = Vector3.MoveTowards(transform.position, targetWayPoint, speed * Time.deltaTime);
+
+            if (transform.position == targetWayPoint) {
+                targetWaypointIndex = (targetWaypointIndex + 1) % waypoints.Length;
+                targetWayPoint = waypoints[targetWaypointIndex];
+                yield return new WaitForSeconds(waitTime);
             }
+
+            /* Wait for one frame. */
+            yield return null;
         }
     }
 
