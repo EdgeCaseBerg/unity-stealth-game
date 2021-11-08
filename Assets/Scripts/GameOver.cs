@@ -29,6 +29,7 @@ public class GameOver : MonoBehaviour
         gameoverUI.SetActive(true);
         gameIsOver = true;
         FindObjectOfType<Player>().OnGoalReached -= DisplayGameWin;
+        Guard.OnGuardHasSpottedPlayer -= DisplayGameOver;
     }
 
     // Update is called once per frame
@@ -36,6 +37,9 @@ public class GameOver : MonoBehaviour
     {
         if (gameIsOver) {
             if (Input.GetKeyDown(KeyCode.Space)) {
+                gameIsOver = false;
+                Guard.OnGuardHasSpottedPlayer -= DisplayGameOver;
+                FindObjectOfType<Player>().OnGoalReached -= DisplayGameWin;
                 SceneManager.LoadScene(0);
             }
         }
