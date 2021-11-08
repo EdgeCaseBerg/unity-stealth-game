@@ -19,14 +19,20 @@ public class Player : MonoBehaviour
     public event System.Action OnGoalReached;
     public event System.Action OnCoinCollected;
 
+    bool disabled;
+
     void Start() {
-        rigidbody = GetComponent<Rigidbody>();    
+        rigidbody = GetComponent<Rigidbody>();
+        Guard.OnGuardHasSpottedPlayer += Disable;
     }
 
     void Update()
     {
-        /* Raw user input that will inform how we turn or move */
-        Vector3 inputDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+        Vector3 inputDirection = Vector3.zero;
+        if (!disabled) {
+            /* Raw user input that will inform how we turn or move */
+            inputDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+        }
 
         /* Convert that into a smoothed amount so that we don't jitter and move abruptly */
         float inputMagnitude = inputDirection.magnitude;
@@ -44,6 +50,10 @@ public class Player : MonoBehaviour
         velocity = transform.forward * moveSpeed * smoothInputMagnitude;
     }
 
+    private void Disable() {
+        disabled = true;
+    }
+
     void FixedUpdate() {
         rigidbody.MoveRotation(Quaternion.Euler(Vector3.up * angle));
         rigidbody.MovePosition(rigidbody.position + velocity * Time.deltaTime);
@@ -52,6 +62,7 @@ public class Player : MonoBehaviour
     void OnTriggerEnter(Collider other) {
         if (other.tag == "Goal") {
             if (OnGoalReached != null) {
+                Disable();
                 OnGoalReached();
             }
         }
@@ -61,5 +72,9 @@ public class Player : MonoBehaviour
                 OnCoinCollected();
             }
         }
+    }
+
+    void OnDestroy() {
+        Guard.OnGuardHasSpottedPlayer -= Disable;
     }
 }
