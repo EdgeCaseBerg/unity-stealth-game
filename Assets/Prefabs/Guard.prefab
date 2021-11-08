@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: f961d2afd5954e441938bb1d7fa3dde4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -118,7 +118,7 @@ MonoBehaviour:
   waitTime: 0.3
   viewMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 0
 --- !u!1 &7003739147390719926
 GameObject:
   m_ObjectHideFlags: 0
@@ -162,7 +162,7 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 1, g: 0.8691486, b: 0, a: 1}
-  m_Intensity: 17.5
+  m_Intensity: 18.07
   m_Range: 15
   m_SpotAngle: 82.2
   m_InnerSpotAngle: 1

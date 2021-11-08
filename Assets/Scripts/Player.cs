@@ -16,6 +16,9 @@ public class Player : MonoBehaviour
 
     Vector3 velocity;
 
+    public event System.Action OnGoalReached;
+    public event System.Action OnCoinCollected;
+
     void Start() {
         rigidbody = GetComponent<Rigidbody>();    
     }
@@ -44,5 +47,19 @@ public class Player : MonoBehaviour
     void FixedUpdate() {
         rigidbody.MoveRotation(Quaternion.Euler(Vector3.up * angle));
         rigidbody.MovePosition(rigidbody.position + velocity * Time.deltaTime);
+    }
+
+    void OnTriggerEnter(Collider other) {
+        if (other.tag == "Goal") {
+            if (OnGoalReached != null) {
+                OnGoalReached();
+            }
+        }
+        if (other.tag == "Coin") {
+            if (OnCoinCollected != null) {
+                Destroy(other.gameObject);
+                OnCoinCollected();
+            }
+        }
     }
 }
